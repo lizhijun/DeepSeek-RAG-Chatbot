@@ -1,93 +1,91 @@
-# 🚀 **DeepSeek RAG Chatbot 3.0 – Now with GraphRAG & Chat History Integration!**
-**(100% Free, Private (No Internet), and Local PC Installation)**  
+# 🚀 **DeepSeek RAG 聊天机器人 3.0 - 新增知识图谱与对话历史集成！**
+**(100% 免费、隐私保护（无网络连接）、本地安装运行)**  
 
-[![Your Video Title](https://img.youtube.com/vi/xDGLub5JPFE/0.jpg)](https://www.youtube.com/watch?v=xDGLub5JPFE "Watch on YouTube")
+[![演示视频](https://img.youtube.com/vi/xDGLub5JPFE/0.jpg)](https://www.youtube.com/watch?v=xDGLub5JPFE "观看演示视频")
 
-🔥 **DeepSeek + NOMIC + FAISS + Neural Reranking + HyDE + GraphRAG + Chat Memory = The Ultimate RAG Stack!**  
+🔥 **DeepSeek + NOMIC + FAISS + 神经重排序 + HyDE + 知识图谱 + 对话记忆 = 终极RAG技术栈！**  
 
-This chatbot enables **fast, accurate, and explainable retrieval of information** from PDFs, DOCX, and TXT files using **DeepSeek-7B**, **BM25**, **FAISS**, **Neural Reranking (Cross-Encoder)**, **GraphRAG**, and **Chat History Integration**.  
-
----
-
-## **🔹 New Features in This Version**
-
-- **GraphRAG Integration:** Builds a **Knowledge Graph** from your documents for more **contextual** and **relational** understanding.  
-- **Chat Memory History Awareness:** Maintains context by referencing **chat history**, enabling more **coherent** and **contextually relevant** responses.  
-- **Improved Error Handling:** Resolved issues related to **chat history clearing** and other minor bugs for a **smoother user experience**.  
+本聊天机器人支持从PDF、DOCX和TXT文件中**快速、准确、可解释地检索信息**，采用**DeepSeek-7B**、**BM25**、**FAISS**、**神经重排序（交叉编码器）**、**知识图谱**和**对话历史集成**技术。
 
 ---
 
-# **Installation & Setup**
+## **🔹 新版特性**
 
-You can install and run the **DeepSeek RAG Chatbot** in one of two ways:
-
-1. **Traditional (Python/venv) Installation**  
-2. **Docker Installation** (ideal for containerized deployments)
+- **知识图谱集成：** 从文档构建**知识图谱**，实现更**上下文相关**的语义理解  
+- **对话历史记忆功能：** 通过引用**对话历史**保持上下文，生成更**连贯**且**相关**的回复  
+- **改进的错误处理：** 修复了**对话历史清除**相关问题及其他小问题，提供**更流畅的体验**  
 
 ---
 
-## **1️⃣ Traditional (Python/venv) Installation**
+# **安装与配置**
 
-### **Step A: Clone the Repository & Install Dependencies**
-```
+可通过以下两种方式安装运行**DeepSeek RAG聊天机器人**：
+
+1. **传统Python虚拟环境安装**  
+2. **Docker容器化部署**（推荐生产环境使用）
+
+---
+
+## **1️⃣ 传统Python虚拟环境安装**
+
+### **步骤A：克隆仓库并安装依赖**
+```bash
 git clone https://github.com/SaiAkhil066/DeepSeek-RAG-Chatbot.git
 cd DeepSeek-RAG-Chatbot
 
-# Create a virtual environment
+# 创建虚拟环境
 python -m venv venv
 
-# Activate your environment
-# On Windows:
+# 激活环境
+# Windows:
 venv\Scripts\activate
-# On macOS/Linux:
+# macOS/Linux:
 source venv/bin/activate
 
-# Upgrade pip (optional, but recommended)
+# 升级pip（推荐）
 pip install --upgrade pip
 
-# Install project dependencies
+# 安装项目依赖
 pip install -r requirements.txt
 ```
 
-### **Step B: Download & Set Up Ollama**
-1. **Download Ollama** → [https://ollama.com/](https://ollama.com/)  
-2. **Pull the required models**:
-   ```
+### **步骤B：下载并配置Ollama**
+1. **下载Ollama** → [https://ollama.com/](https://ollama.com/)  
+2. **拉取所需模型**：
+   ```bash
    ollama pull deepseek-r1:7b
    ollama pull nomic-embed-text
    ```
-   *Note: If you want to use a different model, update `MODEL` or `EMBEDDINGS_MODEL` in your environment variables or `.env` file accordingly.*
+   *注：如需使用其他模型，请更新环境变量或`.env`文件中的`MODEL`和`EMBEDDINGS_MODEL`参数*
 
-### **Step C: Run the Chatbot**
-1. Make sure **Ollama** is running on your system:
-   ```
+### **步骤C：运行聊天机器人**
+1. 确保**Ollama**服务已启动：
+   ```bash
    ollama serve
    ```
-2. Launch the Streamlit app:
-   ```
+2. 启动Streamlit应用：
+   ```bash
    streamlit run app.py
    ```
-3. Open your browser at **[http://localhost:8501](http://localhost:8501)** to access the chatbot UI.
+3. 在浏览器访问 **[http://localhost:8501](http://localhost:8501)** 使用聊天界面
 
 ---
 
-## **2️⃣ Docker Installation**
+## **2️⃣ Docker安装**
 
-### **A) Single-Container Approach (Ollama on Your Host)**
+### **A) 单容器方案（主机运行Ollama）**
 
-If **Ollama** is already **installed on your host machine** and listening at `localhost:11434`, do the following:
+如果**Ollama**已安装在**宿主机**并监听`localhost:11434`：
 
-1. **Build & Run**:
-   ```
+1. **构建并运行**：
+   ```bash
    docker-compose build
    docker-compose up
    ```
-2. The app is now served at **[http://localhost:8501](http://localhost:8501)**. Ollama runs on your host, and the container accesses it via the specified URL.
+2. 应用将运行于 **[http://localhost:8501](http://localhost:8501)**，容器通过指定URL访问宿主机Ollama服务
 
-### **B) Two-Container Approach (Ollama in Docker)**
-
-If you prefer **everything** in Docker:
-```
+### **B) 双容器方案（Docker运行Ollama）**
+```yaml
 version: "3.8"
 
 services:
@@ -111,54 +109,51 @@ services:
       - ollama
 ```
 
-Then:
-```
+运行：
+```bash
 docker-compose build
 docker-compose up
 ```
-Both **Ollama** and the chatbot run in Docker. Access the chatbot at **[http://localhost:8501](http://localhost:8501)**.
-
-
-### **But consider step A) for comfort..**
----
-
-# **How the Chatbot Works**
-
-1. **Upload Documents**: Add PDFs, DOCX, or TXT files via the sidebar.  
-2. **Hybrid Retrieval**: Combines **BM25** and **FAISS** to fetch the most relevant text chunks.  
-3. **GraphRAG Processing**: Builds a **Knowledge Graph** from your documents to understand relationships and context.  
-4. **Neural Reranking**: Uses a **Cross-Encoder** model for reordering the retrieved chunks by relevance.  
-5. **Query Expansion (HyDE)**: Generates hypothetical answers to **expand** your query for better recall.  
-6. **Chat Memory History Integration**: Maintains context by referencing previous user messages.  
-7. **DeepSeek-7B Generation**: Produces the final answer based on top-ranked chunks.
+Ollama和聊天机器人均运行在Docker中，访问 **[http://localhost:8501](http://localhost:8501)** 使用
 
 ---
 
-## **🔹 Why This Upgrade?**
+# **工作原理**
 
-| Feature                       | Previous Version            | New Version                        |
-|------------------------------|-----------------------------|------------------------------------|
-| **Retrieval Method**         | Hybrid (BM25 + FAISS)      | Hybrid + **GraphRAG**             |
-| **Contextual Understanding** | Limited                    | **Enhanced with Knowledge Graphs** |
-| **User Interface**           | Standard                   | **Customizable + Themed Sidebar**  |
-| **Chat History**             | Not Utilized               | **Full Memory Integration**        |
-| **Error Handling**           | Basic                      | **Improved with Bug Fixes**        |
-
-
----
-
-## **📌 Contributing**
-
-- **Fork** this repo, submit **pull requests**, or open **issues** for new features or bug fixes.  
-- We love hearing community suggestions on how to extend or improve the chatbot.
+1. **文档上传**：通过侧边栏上传PDF/DOCX/TXT文件  
+2. **混合检索**：结合**BM25**和**FAISS**获取最相关文本片段  
+3. **知识图谱处理**：从文档构建**知识图谱**理解实体关系  
+4. **神经重排序**：使用**交叉编码器**模型对结果进行相关性重排序  
+5. **查询扩展（HyDE）**：生成假设答案扩展查询范围  
+6. **对话历史集成**：参考历史对话保持上下文连贯  
+7. **DeepSeek-7B生成**：基于最优片段生成最终回答
 
 ---
 
-### **🔗 Connect & Share Your Thoughts!**
+## **🔹 版本升级亮点**
 
-Got feedback or suggestions? Let’s discuss on [**Reddit**](https://www.reddit.com/user/akhilpanja/)! 🚀💡
+| 功能                      | 旧版                         | 新版                          |
+|--------------------------|-----------------------------|-------------------------------|
+| **检索方式**            | 混合检索（BM25 + FAISS）   | 混合检索 + **知识图谱**       |
+| **上下文理解**          | 有限                        | **基于知识图谱的增强理解**    |
+| **用户界面**            | 标准                        | **可定制主题侧边栏**          |
+| **对话历史**            | 未使用                      | **完整记忆集成**              |
+| **错误处理**            | 基础                        | **改进的错误修复机制**        |
 
 ---
 
-**Enjoy building knowledge graphs, maintaining conversation memory, and harnessing powerful local LLM inference—all from your own machine.**  
-_The future of retrieval-augmented AI is here—no internet required!_
+## **📌 参与贡献**
+
+- **Fork** 本仓库，提交**Pull Request**或创建**Issue**建议新功能/修复问题  
+- 欢迎提出改进建议，共同完善聊天机器人
+
+---
+
+### **🔗 联系我们**
+
+欢迎在[**Reddit**](https://www.reddit.com/user/akhilpanja/)分享您的使用体验和建议！🚀💡
+
+---
+
+**立即体验知识图谱构建、对话记忆管理和本地LLM的强大能力——完全在您的设备上运行！**  
+_检索增强型AI的未来已来——无需网络连接！_
