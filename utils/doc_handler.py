@@ -9,6 +9,11 @@ from utils.build_graph import build_knowledge_graph
 from rank_bm25 import BM25Okapi
 import os
 import re
+import tempfile
+import shutil
+from sentence_transformers import CrossEncoder
+import torch
+from pathlib import Path
 
 
 def process_documents(uploaded_files,reranker,embedding_model, base_url):
@@ -93,3 +98,98 @@ def process_documents(uploaded_files,reranker,embedding_model, base_url):
         st.write(f"🔗 Total Edges: {len(G.edges)}")
         st.write(f"🔗 Sample Nodes: {list(G.nodes)[:10]}")
         st.write(f"🔗 Sample Edges: {list(G.edges)[:10]}")
+
+# 处理文档字节流，用于API上传
+def process_document_bytes(file_bytes, filename, output_dir, embedding_model="nomic-embed-text", base_url="http://localhost:11434"):
+    """
+    处理从API上传的文档字节流
+    
+    Args:
+        file_bytes: 文件的字节内容
+        filename: 文件名
+        output_dir: 输出目录
+        embedding_model: 嵌入模型名称
+        base_url: Ollama API基础URL
+    
+    Returns:
+        向量存储路径和知识图谱
+    """
+    # 创建临时文件
+    with tempfile.NamedTemporaryFile(delete=False, suffix=Path(filename).suffix) as temp_file:
+        temp_file.write(file_bytes)
+        temp_file_path = temp_file.name
+    
+    try:
+        # 根据文件类型选择加载器
+        if filename.lower().endswith('.pdf'):
+            loader = PyPDFLoader(temp_file_path)
+        elif filename.lower().endswith('.docx'):
+            loader = Docx2txtLoader(temp_file_path)
+        elif filename.lower().endswith('.txt'):
+            loader = TextLoader(temp_file_path)
+        else:
+            raise ValueError(f"Unsupported file type: {filename}")
+        
+        # 加载文档
+        documents = loader.load()
+        
+        # 文本分割
+        text_splitter = CharacterTextSplitter(
+            separator="\n",
+            chunk_size=1000,
+            chunk_overlap=200,
+            length_function=len
+        )
+        docs = text_splitter.split_documents(documents)
+        
+        # 创建向量存储
+        embeddings = OllamaEmbeddings(
+            model_name=embedding_model,
+            base_url=base_url
+        )
+        
+        # 创建BM25检索器
+        corpus = [doc.page_content for doc in docs]
+        bm25 = BM25Okapi(corpus)
+        bm25_retriever = BM25Retriever.from_texts(corpus, docs)
+        
+        # 创建FAISS向量存储
+        vectorstore = FAISS.from_documents(docs, embeddings)
+        
+        # 存储向量索引
+        faiss_path = os.path.join(output_dir, "faiss_index")
+        vectorstore.save_local(faiss_path)
+        
+        # 构建知识图谱（可选）
+        knowledge_graph = build_knowledge_graph(docs)
+        
+        # 创建检索管道结果
+        retrieval_pipeline = {
+            "faiss": vectorstore.as_retriever(search_kwargs={"k": 3}),
+            "bm25": bm25_retriever,
+            "ensemble": EnsembleRetriever(
+                retrievers=[
+                    vectorstore.as_retriever(search_kwargs={"k": 3}),
+                    bm25_retriever
+                ],
+                weights=[0.5, 0.5]
+            ),
+            "knowledge_graph": knowledge_graph
+        }
+        
+        # 尝试加载重排序模型
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        try:
+            reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2", device=device)
+            retrieval_pipeline["reranker"] = reranker
+        except Exception as e:
+            print(f"Failed to load CrossEncoder model: {str(e)}")
+        
+        # 保存检索管道（可选）
+        # 此处可以添加序列化保存检索管道的代码
+        
+        return retrieval_pipeline
+    
+    finally:
+        # 删除临时文件
+        os.unlink(temp_file_path)

@@ -1,0 +1,13 @@
+[2025-03-11 13:33:11 +0800] [8900] [INFO] Starting gunicorn 23.0.0
+[2025-03-11 13:33:11 +0800] [8900] [INFO] Listening at: http://0.0.0.0:5005 (8900)
+[2025-03-11 13:33:11 +0800] [8900] [INFO] Using worker: sync
+[2025-03-11 13:33:11 +0800] [8902] [INFO] Booting worker with pid: 8902
+[2025-03-11 13:33:11 +0800] [8903] [INFO] Booting worker with pid: 8903
+[2025-03-11 13:33:11 +0800] [8904] [INFO] Booting worker with pid: 8904
+[2025-03-11 13:33:11 +0800] [8905] [INFO] Booting worker with pid: 8905
+[2025-03-11 13:33:36 +0800] [8900] [INFO] Handling signal: int
+[2025-03-11 13:33:36 +0800] [8902] [INFO] Worker exiting (pid: 8902)
+[2025-03-11 13:33:36 +0800] [8903] [INFO] Worker exiting (pid: 8903)
+[2025-03-11 13:33:36 +0800] [8905] [INFO] Worker exiting (pid: 8905)
+[2025-03-11 13:33:36 +0800] [8904] [INFO] Worker exiting (pid: 8904)
+[2025-03-11 13:33:37 +0800] [8900] [INFO] Shutting down: Master

@@ -16,3 +16,6 @@ docx2txt
 tqdm
 pypdf
 flask
+flask-cors
+gunicorn
+python-dotenv
