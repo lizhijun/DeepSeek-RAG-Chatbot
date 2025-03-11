@@ -7,6 +7,7 @@ services:
     # Map Streamlit's default port 8501 in the container to 8501 on the host.
     ports:
       - "8501:8501"
+      - "5000:5000"
     
     # Environment variables for .env usage or direct injection (optional).
     # If you have a .env file, Docker Compose can load them with env_file: .env
